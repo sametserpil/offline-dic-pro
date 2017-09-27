@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/dictionary" />
+        <item
+            android:id="@+id/nav_irregular"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/irregular_verbs" />
+        <item
+            android:id="@+id/nav_pharasal"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/pharasal_verbs" />
+        <item
+            android:id="@+id/nav_favorites"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/favorites" />
+
+        <item
+            android:id="@+id/nav_commons"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/common_pharases" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_history"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/history" />
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/settings" />
+        </menu>
+    </item>
+
+</menu>
