@@ -6,18 +6,26 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.samet.offlinedic.pro.R;
+import com.samet.offlinedic.pro.model.WordSuggestion;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements FloatingSearchView.OnQueryChangeListener, FloatingSearchView.OnSearchListener {
+
+    private FloatingSearchView searchView;
 
     public SearchFragment() {
     }
 
     public static SearchFragment newInstance() {
-        SearchFragment fragment = new SearchFragment();
-        return fragment;
+        return new SearchFragment();
     }
 
     @Override
@@ -28,8 +36,11 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
+        searchView = view.findViewById(R.id.floating_search_view);
+        searchView.setOnQueryChangeListener(this);
+        searchView.setOnSearchListener(this);
+        return view;
     }
 
     @Override
@@ -42,4 +53,21 @@ public class SearchFragment extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void onSearchTextChanged(String oldQuery, String newQuery) {
+        List<SearchSuggestion> newSuggestions = new ArrayList<>();
+        newSuggestions.add(new WordSuggestion("samet"));
+        newSuggestions.add(new WordSuggestion("asdasd"));
+        searchView.swapSuggestions(newSuggestions);
+    }
+
+    @Override
+    public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+        Toast.makeText(getContext(), searchSuggestion.getBody(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSearchAction(String currentQuery) {
+        Toast.makeText(getContext(), currentQuery, Toast.LENGTH_SHORT).show();
+    }
 }
