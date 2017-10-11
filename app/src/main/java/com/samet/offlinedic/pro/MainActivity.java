@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.samet.offlinedic.pro.fragments.CommonPharasesFragment;
+import com.samet.offlinedic.pro.fragments.DailyPharasesFragment;
 import com.samet.offlinedic.pro.fragments.FavoritesFragment;
 import com.samet.offlinedic.pro.fragments.HistoryFragment;
 import com.samet.offlinedic.pro.fragments.IrregularVerbsFragment;
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, SearchFragment.newInstance(), getString(R.string.dictionary)).commit();
                 break;
             case R.id.nav_commons:
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, CommonPharasesFragment.newInstance(), getString(R.string.common_pharases)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, DailyPharasesFragment.newInstance(), getString(R.string.common_pharases)).commit();
                 break;
             case R.id.nav_favorites:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, FavoritesFragment.newInstance(), getString(R.string.favorites)).commit();

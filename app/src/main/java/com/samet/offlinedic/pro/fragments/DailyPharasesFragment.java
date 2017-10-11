@@ -10,14 +10,14 @@ import android.view.ViewGroup;
 import com.samet.offlinedic.pro.R;
 
 
-public class CommonPharasesFragment extends Fragment {
+public class DailyPharasesFragment extends Fragment {
 
-    public CommonPharasesFragment() {
+    public DailyPharasesFragment() {
         // Required empty public constructor
     }
 
-    public static CommonPharasesFragment newInstance() {
-        CommonPharasesFragment fragment = new CommonPharasesFragment();
+    public static DailyPharasesFragment newInstance() {
+        DailyPharasesFragment fragment = new DailyPharasesFragment();
         return fragment;
     }
 
@@ -29,7 +29,7 @@ public class CommonPharasesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_common_pharases, container, false);
+        return inflater.inflate(R.layout.fragment_daily_pharases, container, false);
     }
 
 
