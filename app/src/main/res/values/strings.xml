@@ -16,4 +16,5 @@
     <string name="history">Geçmiş</string>
     <string name="settings">Ayarlar</string>
     <string name="common_pharases">Kalıp Cümleler</string>
+    <string name="failed_to_open_db">Failed to open database</string>
 </resources>
