@@ -6,18 +6,22 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 
 import com.samet.offlinedic.pro.R;
+import com.samet.offlinedic.pro.adapters.IrregularVerbsAdapter;
 
 public class IrregularVerbsFragment extends Fragment {
+
+    private IrregularVerbsAdapter listAdapter;
+    private ExpandableListView expListView;
 
     public IrregularVerbsFragment() {
         // Required empty public constructor
     }
 
     public static IrregularVerbsFragment newInstance() {
-        IrregularVerbsFragment fragment = new IrregularVerbsFragment();
-        return fragment;
+        return new IrregularVerbsFragment();
     }
 
     @Override
@@ -29,7 +33,15 @@ public class IrregularVerbsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_irregular_verbs, container, false);
+        View view = inflater.inflate(R.layout.fragment_irregular_verbs, container, false);
+
+        expListView = (ExpandableListView) view.findViewById(R.id.irregular_verbs_listview);
+        listAdapter = new IrregularVerbsAdapter(getContext());
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+
+        return view;
     }
 
 

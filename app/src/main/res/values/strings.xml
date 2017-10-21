@@ -17,4 +17,9 @@
     <string name="settings">Ayarlar</string>
     <string name="common_pharases">Kalıp Cümleler</string>
     <string name="failed_to_open_db">Failed to open database</string>
+    <string name="past_simple">Past Simple: %s</string>
+    <string name="past_participle">Past Participle: %s</string>
+    <string name="third_person_singular">Third Person Singular: %s</string>
+    <string name="present_simple_gerund">Present Participle Gerund: %s</string>
+    <string name="meaning">Meaning: %s</string>
 </resources>
