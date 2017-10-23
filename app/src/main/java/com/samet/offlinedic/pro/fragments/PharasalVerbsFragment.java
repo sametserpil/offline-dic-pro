@@ -6,18 +6,22 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 
 import com.samet.offlinedic.pro.R;
+import com.samet.offlinedic.pro.adapters.PharasalVerbsAdapter;
 
 public class PharasalVerbsFragment extends Fragment {
+
+    private PharasalVerbsAdapter listAdapter;
+    private ExpandableListView expListView;
 
     public PharasalVerbsFragment() {
         // Required empty public constructor
     }
 
     public static PharasalVerbsFragment newInstance() {
-        PharasalVerbsFragment fragment = new PharasalVerbsFragment();
-        return fragment;
+        return new PharasalVerbsFragment();
     }
 
     @Override
@@ -29,7 +33,13 @@ public class PharasalVerbsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pharasal_verbs, container, false);
+        View view = inflater.inflate(R.layout.fragment_pharasal_verbs, container, false);
+        expListView = (ExpandableListView) view.findViewById(R.id.pharasal_verbs_listview);
+        listAdapter = new PharasalVerbsAdapter(getContext());
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+        return view;
     }
 
 
