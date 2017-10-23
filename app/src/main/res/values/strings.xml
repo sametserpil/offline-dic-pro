@@ -23,4 +23,23 @@
     <string name="present_simple_gerund">Present Participle Gerund: %s</string>
     <string name="meaning">Meaning: %s</string>
     <string name="example">Example: %s</string>
+    <string name="pick_category">Kategori Seçin</string>
+
+    <string-array name="categories">
+        <item>Selamlaşma</item>
+        <item>Tanışma</item>
+        <item>Yardımlaşma</item>
+        <item>Genel</item>
+        <item>Alışveriş</item>
+        <item>Adres</item>
+        <item>Yemek</item>
+        <item>Seyahat</item>
+        <item>Konaklama</item>
+        <item>Telefon</item>
+        <item>Arkadaşlık</item>
+        <item>Sağlık</item>
+        <item>İş</item>
+        <item>Para</item>
+        <item>Eğitim</item>
+    </string-array>
 </resources>
