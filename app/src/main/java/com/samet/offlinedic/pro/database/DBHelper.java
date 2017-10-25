@@ -7,11 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.samet.offlinedic.pro.model.Category;
 import com.samet.offlinedic.pro.model.DailyPharase;
 import com.samet.offlinedic.pro.model.DataHolder;
 import com.samet.offlinedic.pro.model.IrregularVerb;
 import com.samet.offlinedic.pro.model.PharasalVerb;
+import com.samet.offlinedic.pro.model.WordSuggestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,25 +23,20 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // The Android's default system path of your application database.
     private static final String DB_PATH = System.getenv("EXTERNAL_STORAGE") + "/sozluk-db/";
-    private final String IRREGULAR_VERBS_TABLE = "IRREGULAR_VERBS";
-    private final String[] IRREGULAR_VERBS_COLS = new String[]{"word", "past_simple", "past_participle", "third_person_singular", "present_participle_gerund", "meaning"};
-
-    private final String PHARASAL_VERBS_TABLE = "PHARASAL_VERBS";
-    private final String[] PHARASAL_VERBS_COLS = new String[]{"word", "meaning", "example"};
-
-    private final String DAILY_PHARASES_TABLE = "DAILY_PHARASES";
-    private final String[] DAILY_PHARASES_COLS = new String[]{"pharase", "meaning", "category"};
-
-
-    private static final String KEY_ROWID = "_id";
     private static final String KEY_WORD = "word";
+    private static final String KEY_WORD_EXTENDED = "word_extended";
     private static final String KEY_MEANING = "meaning";
     private static final String FIELD_SUGGESTION = "word";
-    private static String DB_NAME = "TR-EN-DicDB.db";
-    private static String TR2EN_TABLE = "tr2en";
-    private static String EN2TR_TABLE = "en2tr";
+    private static String DB_NAME = "yeni.db";
+    private static String TR2EN_TABLE = "TR";
+    private static String EN2TR_TABLE = "EN";
+    private final String IRREGULAR_VERBS_TABLE = "IRREGULAR_VERBS";
+    private final String[] IRREGULAR_VERBS_COLS = new String[]{"word", "past_simple", "past_participle", "third_person_singular", "present_participle_gerund", "meaning"};
+    private final String PHARASAL_VERBS_TABLE = "PHARASAL_VERBS";
+    private final String[] PHARASAL_VERBS_COLS = new String[]{"word", "meaning", "example"};
+    private final String DAILY_PHARASES_TABLE = "DAILY_PHARASES";
+    private final String[] DAILY_PHARASES_COLS = new String[]{"pharase", "meaning", "category"};
     private final SQLiteDatabase myDataBase;
-    Cursor c = null;
 
     /**
      * Constructor Takes and keeps a reference of the passed context in order to
@@ -52,6 +49,7 @@ public class DBHelper extends SQLiteOpenHelper {
         readPharasalVerbs();
         readDailyPharases();
     }
+
 
     private void readIrregularVerbs() {
         new AsyncTask<Void, Void, List<IrregularVerb>>() {
@@ -144,47 +142,68 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public String getMeaningEN2TR(String query) {
-        String[] columns = new String[]{KEY_MEANING};
-        c = myDataBase.query(EN2TR_TABLE, columns, KEY_WORD + "=\""
+        String[] columns = new String[]{KEY_WORD_EXTENDED, KEY_MEANING};
+        Cursor cursor = myDataBase.query(EN2TR_TABLE, columns, KEY_WORD + "=\""
                 + query + "\" collate nocase", null, null, null, null);
-        int item = 1;
         String meaning = "";
-        if (c != null) {
-            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                meaning += (item + ") " + c.getString(0) + "\n");
-                item++;
+        if (cursor != null) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                meaning += "<font color=#FF4081>" + cursor.getString(0) + "</font><br><br><font color=#3F51B5>" + cursor.getString(1).replaceAll("\\\\n", "<br>") + "</font><br>";
             }
+            cursor.close();
             return meaning;
         }
+
         return null;
     }
 
     public String getMeaningTR2EN(String query) {
-        String[] columns = new String[]{KEY_MEANING};
-        c = myDataBase.query(TR2EN_TABLE, columns, KEY_WORD + "=\""
+        String[] columns = new String[]{KEY_WORD_EXTENDED, KEY_MEANING};
+        Cursor cursor = myDataBase.query(TR2EN_TABLE, columns, KEY_WORD + "=\""
                 + query + "\" collate nocase", null, null, null, null);
-        int item = 1;
         String meaning = "";
-        if (c != null) {
-            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                meaning += (item + ") " + c.getString(0) + "\n");
-                item++;
+        if (cursor != null) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                meaning += "<font color=#FF4081>" + cursor.getString(0) + "</font><br><br><font color=#3F51B5>" + cursor.getString(1).replaceAll("\\\\n", "<br>") + "</font><br>";
             }
-
+            cursor.close();
             return meaning;
         }
 
         return null;
     }
 
-    public Cursor getSuggestionsEN2TR(String s) {
-        return myDataBase.query(EN2TR_TABLE, new String[]{KEY_ROWID, FIELD_SUGGESTION},
+    public List<SearchSuggestion> getSuggestionsEN2TR(String s) {
+        Cursor cursor = myDataBase.query(true, EN2TR_TABLE, new String[]{FIELD_SUGGESTION},
                 FIELD_SUGGESTION + " LIKE \"" + s + "%\"", null, null, null, FIELD_SUGGESTION, "20");
+
+        List<SearchSuggestion> suggestions = new ArrayList<>();
+        if (cursor != null) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                suggestions.add(new WordSuggestion(cursor.getString(0)));
+            }
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return suggestions;
     }
 
-    public Cursor getSuggestionsTR2EN(String s) {
-        return myDataBase.query(TR2EN_TABLE, new String[]{KEY_ROWID, FIELD_SUGGESTION},
+
+    public List<SearchSuggestion> getSuggestionsTR2EN(String s) {
+        Cursor cursor = myDataBase.query(true, TR2EN_TABLE, new String[]{FIELD_SUGGESTION},
                 FIELD_SUGGESTION + " LIKE \"" + s + "%\"", null, null, null, FIELD_SUGGESTION, "20");
+
+        List<SearchSuggestion> suggestions = new ArrayList<>();
+        if (cursor != null) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                suggestions.add(new WordSuggestion(cursor.getString(0)));
+            }
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return suggestions;
     }
 
 

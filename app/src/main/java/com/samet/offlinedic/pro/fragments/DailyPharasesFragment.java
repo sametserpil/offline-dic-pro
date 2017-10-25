@@ -85,6 +85,48 @@ public class DailyPharasesFragment extends Fragment implements View.OnClickListe
             case 0:
                 pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.GREETINGS), getContext()));
                 break;
+            case 1:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.INTRODUCTIONS), getContext()));
+                break;
+            case 2:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.HELPING), getContext()));
+                break;
+            case 3:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.GENERAL), getContext()));
+                break;
+            case 4:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.SHOPPING), getContext()));
+                break;
+            case 5:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.ADDRESS), getContext()));
+                break;
+            case 6:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.FOOD), getContext()));
+                break;
+            case 7:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.TRAVEL), getContext()));
+                break;
+            case 8:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.ACCOMODATION), getContext()));
+                break;
+            case 9:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.TELEPHONE), getContext()));
+                break;
+            case 10:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.FRIEND), getContext()));
+                break;
+            case 11:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.HEALTH), getContext()));
+                break;
+            case 12:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.BUSINESS), getContext()));
+                break;
+            case 13:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.MONEY), getContext()));
+                break;
+            case 14:
+                pharasesListView.setAdapter(new DailyPharaseAdapter(getPharasesForCategory(Category.EDUCATION), getContext()));
+                break;
             default:
                 break;
         }

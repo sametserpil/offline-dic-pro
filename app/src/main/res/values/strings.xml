@@ -24,6 +24,12 @@
     <string name="meaning">Meaning: %s</string>
     <string name="example">Example: %s</string>
     <string name="pick_category">Kategori Seçin</string>
+    <string name="en2tr"><![CDATA[EN -> TR]]></string>
+    <string name="tr2en"><![CDATA[TR -> EN]]></string>
+    <string name="direction_changed">Çeviri yönü değiştirildi.</string>
+    <string name="search_en">Ara (İngilizce)</string>
+    <string name="search_tr">Ara (Türkçe)</string>
+    <string name="direction">direction</string>
 
     <string-array name="categories">
         <item>Selamlaşma</item>

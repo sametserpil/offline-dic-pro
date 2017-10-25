@@ -26,4 +26,6 @@ public class DataHolder {
     public List<DailyPharase> dailyPharases;
 
     public DBHelper dbHelper;
+
+    public Direction direction;
 }
