@@ -17,7 +17,6 @@ public class IrregularVerbsFragment extends Fragment {
     private ExpandableListView expListView;
 
     public IrregularVerbsFragment() {
-        // Required empty public constructor
     }
 
     public static IrregularVerbsFragment newInstance() {
@@ -35,7 +34,7 @@ public class IrregularVerbsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_irregular_verbs, container, false);
 
-        expListView = (ExpandableListView) view.findViewById(R.id.irregular_verbs_listview);
+        expListView = view.findViewById(R.id.irregular_verbs_listview);
         listAdapter = new IrregularVerbsAdapter(getContext());
 
         // setting list adapter

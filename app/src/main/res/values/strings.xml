@@ -30,6 +30,9 @@
     <string name="search_en">Ara (İngilizce)</string>
     <string name="search_tr">Ara (Türkçe)</string>
     <string name="direction">direction</string>
+    <string name="added_to_favorites">Kelime favorilere eklendi</string>
+    <string name="favorite_already_exists">Bu kelime zaten favori listenizde</string>
+    <string name="failed_to_add_favorite">Kelime eklenirken bir hata oluştu</string>
 
     <string-array name="categories">
         <item>Selamlaşma</item>

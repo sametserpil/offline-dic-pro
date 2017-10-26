@@ -19,6 +19,10 @@ public class DataHolder {
     private DataHolder() {
     }
 
+    public List<FavHis> favorites;
+
+    public List<FavHis> history;
+
     public List<IrregularVerb> irregularVerbs;
 
     public List<PharasalVerb> pharasalVerbs;

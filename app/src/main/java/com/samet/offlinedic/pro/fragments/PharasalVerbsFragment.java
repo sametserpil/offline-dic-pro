@@ -17,7 +17,6 @@ public class PharasalVerbsFragment extends Fragment {
     private ExpandableListView expListView;
 
     public PharasalVerbsFragment() {
-        // Required empty public constructor
     }
 
     public static PharasalVerbsFragment newInstance() {
@@ -32,9 +31,8 @@ public class PharasalVerbsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pharasal_verbs, container, false);
-        expListView = (ExpandableListView) view.findViewById(R.id.pharasal_verbs_listview);
+        expListView = view.findViewById(R.id.pharasal_verbs_listview);
         listAdapter = new PharasalVerbsAdapter(getContext());
 
         // setting list adapter

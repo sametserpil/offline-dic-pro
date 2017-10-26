@@ -11,25 +11,31 @@ import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.samet.offlinedic.pro.model.Category;
 import com.samet.offlinedic.pro.model.DailyPharase;
 import com.samet.offlinedic.pro.model.DataHolder;
+import com.samet.offlinedic.pro.model.Direction;
+import com.samet.offlinedic.pro.model.FavHis;
 import com.samet.offlinedic.pro.model.IrregularVerb;
 import com.samet.offlinedic.pro.model.PharasalVerb;
 import com.samet.offlinedic.pro.model.WordSuggestion;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
 public class DBHelper extends SQLiteOpenHelper {
 
     // The Android's default system path of your application database.
-    private static final String DB_PATH = System.getenv("EXTERNAL_STORAGE") + "/sozluk-db/";
-    private static final String KEY_WORD = "word";
-    private static final String KEY_WORD_EXTENDED = "word_extended";
-    private static final String KEY_MEANING = "meaning";
-    private static final String FIELD_SUGGESTION = "word";
-    private static String DB_NAME = "yeni.db";
-    private static String TR2EN_TABLE = "TR";
-    private static String EN2TR_TABLE = "EN";
+    private final String DB_PATH = System.getenv("EXTERNAL_STORAGE") + "/sozluk-db/";
+    private final String KEY_WORD = "word";
+    private final String KEY_WORD_EXTENDED = "word_extended";
+    private final String KEY_MEANING = "meaning";
+    private final String KEY_LANG = "lang";
+    private final String FIELD_SUGGESTION = "word";
+    private final static String DB_NAME = "yeni.db";
+    private final String TR2EN_TABLE = "TR";
+    private final String EN2TR_TABLE = "EN";
+    private final String HISTORY_TABLE = "HISTORY";
+    private final String FAVORITES_TABLE = "FAVORITES";
     private final String IRREGULAR_VERBS_TABLE = "IRREGULAR_VERBS";
     private final String[] IRREGULAR_VERBS_COLS = new String[]{"word", "past_simple", "past_participle", "third_person_singular", "present_participle_gerund", "meaning"};
     private final String PHARASAL_VERBS_TABLE = "PHARASAL_VERBS";
@@ -37,6 +43,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private final String DAILY_PHARASES_TABLE = "DAILY_PHARASES";
     private final String[] DAILY_PHARASES_COLS = new String[]{"pharase", "meaning", "category"};
     private final SQLiteDatabase myDataBase;
+
 
     /**
      * Constructor Takes and keeps a reference of the passed context in order to
@@ -48,6 +55,8 @@ public class DBHelper extends SQLiteOpenHelper {
         readIrregularVerbs();
         readPharasalVerbs();
         readDailyPharases();
+        readFavorites();
+        readHistory();
     }
 
 
@@ -173,9 +182,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    public List<SearchSuggestion> getSuggestionsEN2TR(String s) {
+    public List<SearchSuggestion> getSuggestionsEN2TR(String query) {
         Cursor cursor = myDataBase.query(true, EN2TR_TABLE, new String[]{FIELD_SUGGESTION},
-                FIELD_SUGGESTION + " LIKE \"" + s + "%\"", null, null, null, FIELD_SUGGESTION, "20");
+                FIELD_SUGGESTION + " LIKE \"" + query + "%\"", null, null, null, FIELD_SUGGESTION, "20");
 
         List<SearchSuggestion> suggestions = new ArrayList<>();
         if (cursor != null) {
@@ -190,9 +199,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public List<SearchSuggestion> getSuggestionsTR2EN(String s) {
+    public List<SearchSuggestion> getSuggestionsTR2EN(String query) {
         Cursor cursor = myDataBase.query(true, TR2EN_TABLE, new String[]{FIELD_SUGGESTION},
-                FIELD_SUGGESTION + " LIKE \"" + s + "%\"", null, null, null, FIELD_SUGGESTION, "20");
+                FIELD_SUGGESTION + " LIKE \"" + query + "%\"", null, null, null, FIELD_SUGGESTION, "20");
 
         List<SearchSuggestion> suggestions = new ArrayList<>();
         if (cursor != null) {
@@ -225,5 +234,62 @@ public class DBHelper extends SQLiteOpenHelper {
         return myDataBase.insert(TR2EN_TABLE, null, cv);
     }
 
+    public long addToFavorites(String word, Direction direction) {
+        if (word.equals(""))
+            return -1;
+        if (favoriteAlreadyExists(word)) {
+            return -2;
+        }
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_WORD, word);
+        cv.put(KEY_LANG, direction.getName());
+        return myDataBase.insert(FAVORITES_TABLE, null, cv);
+    }
+
+    private boolean favoriteAlreadyExists(String word) {
+        for (FavHis fav : DataHolder.getInstance().favorites) {
+            if (fav.getWord().equals(word)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void readFavorites() {
+        List<FavHis> favorites = new ArrayList<>();
+        String[] columns = new String[]{KEY_WORD, KEY_LANG};
+        Cursor cursor = myDataBase.query(FAVORITES_TABLE, columns, null, null, null, null, null);
+        if (cursor != null) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                favorites.add(new FavHis(cursor.getString(0), Direction.valueOf(cursor.getString(1))));
+            }
+            cursor.close();
+        }
+        DataHolder.getInstance().favorites = favorites;
+    }
+
+    public long addToHistory(String word, Direction direction) {
+        if (word.equals(""))
+            return -1;
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_WORD, word);
+        cv.put(KEY_LANG, direction.getName());
+        return myDataBase.insert(HISTORY_TABLE, null, cv);
+    }
+
+
+    public void readHistory() {
+        List<FavHis> history = new ArrayList<>();
+        String[] columns = new String[]{KEY_WORD, KEY_LANG};
+        Cursor cursor = myDataBase.query(HISTORY_TABLE, columns, null, null, null, null, null);
+        if (cursor != null) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                history.add(new FavHis(cursor.getString(0), Direction.valueOf(cursor.getString(1))));
+            }
+            cursor.close();
+        }
+        Collections.reverse(history);
+        DataHolder.getInstance().history = history;
+    }
 
 }
