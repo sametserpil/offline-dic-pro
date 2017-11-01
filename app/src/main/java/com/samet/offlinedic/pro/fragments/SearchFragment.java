@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -100,18 +99,10 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnQue
         searchView.clearQuery();
         DataHolder.getInstance().dbHelper.addToHistory(lastSearched, DataHolder.getInstance().direction);
         if (DataHolder.getInstance().direction.equals(Direction.EN2TR)) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                meaningTextView.setText(Html.fromHtml(DataHolder.getInstance().dbHelper.getMeaningEN2TR(currentQuery), Html.FROM_HTML_MODE_LEGACY));
-            } else {
-                meaningTextView.setText(Html.fromHtml(DataHolder.getInstance().dbHelper.getMeaningEN2TR(currentQuery)));
-            }
+            meaningTextView.setText(DataHolder.getInstance().dbHelper.getMeaningEN2TR(currentQuery));
 
         } else {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                meaningTextView.setText(Html.fromHtml(DataHolder.getInstance().dbHelper.getMeaningTR2EN(currentQuery), Html.FROM_HTML_MODE_LEGACY));
-            } else {
-                meaningTextView.setText(Html.fromHtml(DataHolder.getInstance().dbHelper.getMeaningTR2EN(currentQuery)));
-            }
+            meaningTextView.setText(DataHolder.getInstance().dbHelper.getMeaningTR2EN(currentQuery));
         }
     }
 

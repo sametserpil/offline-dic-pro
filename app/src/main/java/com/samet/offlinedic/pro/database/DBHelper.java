@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
+import android.text.Html;
+import android.text.Spanned;
 
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.samet.offlinedic.pro.model.Category;
@@ -150,7 +152,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public String getMeaningEN2TR(String query) {
+    public Spanned getMeaningEN2TR(String query) {
         String[] columns = new String[]{KEY_WORD_EXTENDED, KEY_MEANING};
         Cursor cursor = myDataBase.query(EN2TR_TABLE, columns, KEY_WORD + "=\""
                 + query + "\" collate nocase", null, null, null, null);
@@ -160,13 +162,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 meaning += "<font color=#FF4081>" + cursor.getString(0) + "</font><br><br><font color=#3F51B5>" + cursor.getString(1).replaceAll("\\\\n", "<br>") + "</font><br>";
             }
             cursor.close();
-            return meaning;
+            return formatMeaningText(meaning);
         }
 
         return null;
     }
 
-    public String getMeaningTR2EN(String query) {
+    public Spanned getMeaningTR2EN(String query) {
         String[] columns = new String[]{KEY_WORD_EXTENDED, KEY_MEANING};
         Cursor cursor = myDataBase.query(TR2EN_TABLE, columns, KEY_WORD + "=\""
                 + query + "\" collate nocase", null, null, null, null);
@@ -176,10 +178,18 @@ public class DBHelper extends SQLiteOpenHelper {
                 meaning += "<font color=#FF4081>" + cursor.getString(0) + "</font><br><br><font color=#3F51B5>" + cursor.getString(1).replaceAll("\\\\n", "<br>") + "</font><br>";
             }
             cursor.close();
-            return meaning;
+            return formatMeaningText(meaning);
         }
 
         return null;
+    }
+
+    private Spanned formatMeaningText(String query) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            return Html.fromHtml(query, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            return Html.fromHtml(query);
+        }
     }
 
     public List<SearchSuggestion> getSuggestionsEN2TR(String query) {

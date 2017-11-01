@@ -1,6 +1,7 @@
 package com.samet.offlinedic.pro.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import com.samet.offlinedic.pro.FavHisMeaningViewer;
 import com.samet.offlinedic.pro.R;
 import com.samet.offlinedic.pro.adapters.FavHisAdapter;
 import com.samet.offlinedic.pro.model.DataHolder;
@@ -55,6 +56,9 @@ public class FavoritesFragment extends Fragment implements AdapterView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Toast.makeText(getContext(), DataHolder.getInstance().favorites.get(i).getWord(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), FavHisMeaningViewer.class);
+        intent.putExtra(getString(R.string.word), DataHolder.getInstance().favorites.get(i).getWord());
+        intent.putExtra(getString(R.string.lang), DataHolder.getInstance().favorites.get(i).getDirection().getName());
+        startActivity(intent);
     }
 }

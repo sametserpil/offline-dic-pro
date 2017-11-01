@@ -22,12 +22,12 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile('com.weiwangcn.betterspinner:library-material:1.1.0') {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    }
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.1.0'
     compile 'com.android.support:support-v4:26.1.0'
     compile 'com.github.arimorty:floatingsearchview:2.1.1'
-    compile('com.weiwangcn.betterspinner:library-material:1.1.0') {
-        exclude group: 'com.android.support', module: 'appcompat-v7'
-    }
 }
