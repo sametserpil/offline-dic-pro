@@ -1,6 +1,9 @@
 package com.samet.offlinedic.pro.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,11 +58,26 @@ public class IrregularVerbsAdapter extends BaseExpandableListAdapter {
         TextView meaning = (TextView) convertView
                 .findViewById(R.id.meaning);
 
-        pastSimple.setText(_context.getString(R.string.past_simple, irregularVerb.getPastSimple()));
-        pastParticiple.setText(_context.getString(R.string.past_participle, irregularVerb.getPastParticiple()));
-        thirdPersonSingular.setText(_context.getString(R.string.third_person_singular, irregularVerb.getThirdPersonSingular()));
-        presentSimpleGerund.setText(_context.getString(R.string.present_simple_gerund, irregularVerb.getPresentParticipleGerund()));
-        meaning.setText(_context.getString(R.string.meaning, irregularVerb.getMeaning()));
+        SpannableString ps = new SpannableString(_context.getString(R.string.past_simple, irregularVerb.getPastSimple()));
+        ps.setSpan(new ForegroundColorSpan(Color.parseColor("#FF4081")), 0, 13, 0);
+        pastSimple.setText(ps);
+
+        SpannableString pp = new SpannableString(_context.getString(R.string.past_participle, irregularVerb.getPastParticiple()));
+        pp.setSpan(new ForegroundColorSpan(Color.parseColor("#FF4081")), 0, 17, 0);
+        pastParticiple.setText(pp);
+
+        SpannableString tps = new SpannableString(_context.getString(R.string.third_person_singular, irregularVerb.getThirdPersonSingular()));
+        tps.setSpan(new ForegroundColorSpan(Color.parseColor("#FF4081")), 0, 23, 0);
+        thirdPersonSingular.setText(tps);
+
+        SpannableString psg = new SpannableString(_context.getString(R.string.present_simple_gerund, irregularVerb.getPresentParticipleGerund()));
+        psg.setSpan(new ForegroundColorSpan(Color.parseColor("#FF4081")), 0, 27, 0);
+        presentSimpleGerund.setText(psg);
+
+        SpannableString mng = new SpannableString(_context.getString(R.string.meaning, irregularVerb.getMeaning()));
+        mng.setSpan(new ForegroundColorSpan(Color.parseColor("#FF4081")), 0, 9, 0);
+        meaning.setText(mng);
+
 
         return convertView;
     }

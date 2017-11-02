@@ -1,6 +1,9 @@
 package com.samet.offlinedic.pro.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,8 +52,13 @@ public class PharasalVerbsAdapter extends BaseExpandableListAdapter {
         TextView meaning = (TextView) convertView
                 .findViewById(R.id.meaning);
 
-        example.setText(_context.getString(R.string.example, pharasalVerb.getExample()));
-        meaning.setText(_context.getString(R.string.meaning, pharasalVerb.getMeaning()));
+        SpannableString ex = new SpannableString(_context.getString(R.string.example, pharasalVerb.getExample()));
+        ex.setSpan(new ForegroundColorSpan(Color.parseColor("#FF4081")), 0, 9, 0);
+        example.setText(ex);
+
+        SpannableString mng = new SpannableString(_context.getString(R.string.meaning, pharasalVerb.getMeaning()));
+        mng.setSpan(new ForegroundColorSpan(Color.parseColor("#FF4081")), 0, 9, 0);
+        meaning.setText(mng);
 
         return convertView;
     }

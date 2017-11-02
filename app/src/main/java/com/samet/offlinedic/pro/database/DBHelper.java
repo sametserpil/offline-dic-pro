@@ -302,4 +302,15 @@ public class DBHelper extends SQLiteOpenHelper {
         DataHolder.getInstance().history = history;
     }
 
+    public void removeFavorite(String word) {
+        myDataBase.delete(FAVORITES_TABLE, "word='" + word + "'", null);
+    }
+
+    public void removeHistory(String word) {
+        myDataBase.delete(HISTORY_TABLE, "word='" + word + "'", null);
+    }
+
+    public void clearHistory() {
+        myDataBase.delete(HISTORY_TABLE, "1=1", null);
+    }
 }

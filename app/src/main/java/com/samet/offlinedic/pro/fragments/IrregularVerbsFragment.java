@@ -36,7 +36,6 @@ public class IrregularVerbsFragment extends Fragment {
 
         expListView = view.findViewById(R.id.irregular_verbs_listview);
         listAdapter = new IrregularVerbsAdapter(getContext());
-
         // setting list adapter
         expListView.setAdapter(listAdapter);
 

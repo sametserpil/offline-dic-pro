@@ -28,7 +28,7 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnQue
 
     private FloatingActionButton favoritesButton;
 
-    private String lastSearched;
+    private String lastSearched = "";
 
     public SearchFragment() {
     }

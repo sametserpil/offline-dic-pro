@@ -54,4 +54,15 @@
     <string name="title_activity_fav_his_meaning_viewer">FavHisMeaningViewer</string>
     <string name="word">word</string>
     <string name="lang">lang</string>
+    <string name="are_you_sure">Emin misiniz?</string>
+    <string name="fav_will_be_deleted">Favori kelimeniz silinecek!</string>
+    <string name="yes_delete">Evet, sil!</string>
+    <string name="deleted">Silindi!</string>
+    <string name="fav_deleted">Favori kelimeniz silindi!</string>
+    <string name="ok">Tamam</string>
+    <string name="history_will_be_deleted">Geçmiş kaydı silinecek!</string>
+    <string name="history_deleted">Geçmiş kaydınız silindi!</string>
+    <string name="all_history_will_be_deleted">Bütün geçmişiniz silinecek!</string>
+    <string name="history_cleared">Geçmiş temizlendi!</string>
+    <string name="no">Hayır</string>
 </resources>
