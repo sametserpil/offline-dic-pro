@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -23,7 +24,6 @@ import com.samet.offlinedic.pro.fragments.HistoryFragment;
 import com.samet.offlinedic.pro.fragments.IrregularVerbsFragment;
 import com.samet.offlinedic.pro.fragments.PharasalVerbsFragment;
 import com.samet.offlinedic.pro.fragments.SearchFragment;
-import com.samet.offlinedic.pro.fragments.SettingsFragment;
 import com.samet.offlinedic.pro.model.DataHolder;
 import com.samet.offlinedic.pro.model.Direction;
 
@@ -40,15 +40,15 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         verifyStoragePermissions(this);
         readLastTranslationDirection();
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.nav_search:
@@ -117,12 +117,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_pharasal:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, PharasalVerbsFragment.newInstance(), getString(R.string.pharasal_verbs)).commit();
                 break;
-            case R.id.nav_settings:
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, SettingsFragment.newInstance(), getString(R.string.settings)).commit();
-                break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

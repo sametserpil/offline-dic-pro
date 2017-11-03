@@ -123,6 +123,7 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnQue
         searchView.setSearchText("");
         searchView.setSearchHint(getString(R.string.search_tr));
         meaningTextView.setText("");
+        lastSearched = "";
         DataHolder.getInstance().direction = Direction.TR2EN;
         writeTranslationDirection(Direction.TR2EN);
     }
@@ -132,6 +133,7 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnQue
         searchView.setSearchText("");
         searchView.setSearchHint(getString(R.string.search_en));
         meaningTextView.setText("");
+        lastSearched = "";
         DataHolder.getInstance().direction = Direction.EN2TR;
         writeTranslationDirection(Direction.EN2TR);
     }

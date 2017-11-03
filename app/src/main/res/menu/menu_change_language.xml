@@ -3,11 +3,9 @@
 
     <item
         android:id="@+id/english"
-        android:icon="@drawable/ic_menu_camera"
         android:title="@string/en2tr" />
     <item
         android:id="@+id/turkish"
-        android:icon="@drawable/ic_menu_gallery"
         android:title="@string/tr2en" />
 
 </menu>

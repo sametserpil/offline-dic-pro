@@ -66,7 +66,7 @@ public class DBHelper extends SQLiteOpenHelper {
         new AsyncTask<Void, Void, List<IrregularVerb>>() {
             @Override
             protected List<IrregularVerb> doInBackground(Void... voids) {
-                List<IrregularVerb> irregularVerbs = new ArrayList<IrregularVerb>();
+                List<IrregularVerb> irregularVerbs = new ArrayList<>();
 
                 Cursor cursor = myDataBase.query(IRREGULAR_VERBS_TABLE, IRREGULAR_VERBS_COLS, null, null, null, null, null);
                 if (cursor != null) {
@@ -91,7 +91,7 @@ public class DBHelper extends SQLiteOpenHelper {
         new AsyncTask<Void, Void, List<PharasalVerb>>() {
             @Override
             protected List<PharasalVerb> doInBackground(Void... voids) {
-                List<PharasalVerb> pharasalVerbs = new ArrayList<PharasalVerb>();
+                List<PharasalVerb> pharasalVerbs = new ArrayList<>();
 
                 Cursor cursor = myDataBase.query(PHARASAL_VERBS_TABLE, PHARASAL_VERBS_COLS, null, null, null, null, null);
                 if (cursor != null) {
@@ -116,7 +116,7 @@ public class DBHelper extends SQLiteOpenHelper {
         new AsyncTask<Void, Void, List<DailyPharase>>() {
             @Override
             protected List<DailyPharase> doInBackground(Void... voids) {
-                List<DailyPharase> dailyPharases = new ArrayList<DailyPharase>();
+                List<DailyPharase> dailyPharases = new ArrayList<>();
 
                 Cursor cursor = myDataBase.query(DAILY_PHARASES_TABLE, DAILY_PHARASES_COLS, null, null, null, null, null);
                 if (cursor != null) {
@@ -275,6 +275,7 @@ public class DBHelper extends SQLiteOpenHelper {
             }
             cursor.close();
         }
+        Collections.reverse(favorites);
         DataHolder.getInstance().favorites = favorites;
     }
 
