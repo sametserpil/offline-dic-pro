@@ -5,11 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.text.Html;
 import android.text.Spanned;
 
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+import com.samet.offlinedic.pro.R;
 import com.samet.offlinedic.pro.model.Category;
 import com.samet.offlinedic.pro.model.DailyPharase;
 import com.samet.offlinedic.pro.model.DataHolder;
@@ -25,6 +28,8 @@ import java.util.List;
 
 
 public class DBHelper extends SQLiteOpenHelper {
+
+    private Bitmap speaker;
 
     // The Android's default system path of your application database.
     private final String DB_PATH = System.getenv("EXTERNAL_STORAGE") + "/sozluk-db/";
@@ -59,6 +64,7 @@ public class DBHelper extends SQLiteOpenHelper {
         readDailyPharases();
         readFavorites();
         readHistory();
+        speaker = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_volume_up_black_24dp);
     }
 
 
@@ -157,6 +163,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = myDataBase.query(EN2TR_TABLE, columns, KEY_WORD + "=\""
                 + query + "\" collate nocase", null, null, null, null);
         String meaning = "";
+
         if (cursor != null) {
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 meaning += "<font color=#FF4081>" + cursor.getString(0) + "</font><br><br><font color=#3F51B5>" + cursor.getString(1).replaceAll("\\\\n", "<br>") + "</font><br>";
