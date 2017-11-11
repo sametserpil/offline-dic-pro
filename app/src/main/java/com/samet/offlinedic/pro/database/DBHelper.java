@@ -4,8 +4,6 @@ import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -23,6 +21,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.samet.offlinedic.pro.R;
@@ -35,6 +34,10 @@ import com.samet.offlinedic.pro.model.IrregularVerb;
 import com.samet.offlinedic.pro.model.PharasalVerb;
 import com.samet.offlinedic.pro.model.WordSuggestion;
 
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,11 +47,9 @@ import java.util.Locale;
 
 public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitListener {
 
-    private final static String DB_NAME = "yeni.db";
     private final Context _context;
-
-    // The Android's default system path of your application database.
-    private final String DB_PATH = System.getenv("EXTERNAL_STORAGE") + "/sozluk-db/";
+    public final static String DB_NAME = "enc.db";
+    public final static String DB_PATH = System.getenv("EXTERNAL_STORAGE") + "/sozluk-db/";
     private final String KEY_WORD = "word";
     private final String KEY_WORD_EXTENDED = "word_extended";
     private final String KEY_MEANING = "meaning";
@@ -64,7 +65,7 @@ public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitLis
     private final String[] PHARASAL_VERBS_COLS = new String[]{"word", "meaning", "example"};
     private final String DAILY_PHARASES_TABLE = "DAILY_PHARASES";
     private final String[] DAILY_PHARASES_COLS = new String[]{"pharase", "meaning", "category"};
-    private final SQLiteDatabase myDataBase;
+    private SQLiteDatabase myDataBase;
     private Bitmap speaker;
     private TextToSpeech tts;
 
@@ -75,7 +76,13 @@ public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitLis
     public DBHelper(Context context) {
         super(context, DB_NAME, null, 1);
         this._context = context;
-        myDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READWRITE);
+        try {
+            SQLiteDatabase.loadLibs(_context); //first init the db libraries with the context
+            myDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, "getDatabasePath();", null, SQLiteDatabase.OPEN_READWRITE);
+        } catch (Exception e) {
+            Toast.makeText(_context, _context.getString(R.string.failed_to_open_db), Toast.LENGTH_LONG).show();
+
+        }
         readIrregularVerbs();
         readPharasalVerbs();
         readDailyPharases();
@@ -382,5 +389,10 @@ public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitLis
             tts.stop();
             tts.shutdown();
         }
+    }
+
+    public static boolean checkDatabase() {
+        String dbFile = DB_PATH + DB_NAME;
+        return new File(dbFile).exists();
     }
 }

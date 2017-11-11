@@ -14,7 +14,7 @@
     <string name="history">Geçmiş</string>
     <string name="settings">Ayarlar</string>
     <string name="common_pharases">Kalıp Cümleler</string>
-    <string name="failed_to_open_db">Failed to open database</string>
+    <string name="failed_to_open_db">Veritabanı açılamadı!</string>
     <string name="past_simple">Past Simple: %s</string>
     <string name="past_participle">Past Participle: %s</string>
     <string name="third_person_singular">Third Person Singular: %s</string>
@@ -63,4 +63,6 @@
     <string name="all_history_will_be_deleted">Bütün geçmişiniz silinecek!</string>
     <string name="history_cleared">Geçmiş temizlendi!</string>
     <string name="no">Hayır</string>
+    <string name="downloading_database">Veritabanı indiriliyor.</string>
+    <string name="BASE64_PUBLIC_KEY">asd</string>
 </resources>

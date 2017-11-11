@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.samet.offlinedic.pro.database.DBHelper;
+import com.samet.offlinedic.pro.database.ExpansionFileUtil;
 import com.samet.offlinedic.pro.fragments.DailyPharasesFragment;
 import com.samet.offlinedic.pro.fragments.FavoritesFragment;
 import com.samet.offlinedic.pro.fragments.HistoryFragment;
@@ -53,7 +54,11 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         verifyStoragePermissions(this);
         readLastTranslationDirection();
-        DataHolder.getInstance().dbHelper = new DBHelper(this);
+        if (DBHelper.checkDatabase()) {
+            DataHolder.getInstance().dbHelper = new DBHelper(this);
+        } else {
+            new ExpansionFileUtil(getApplicationContext()).downloadExpensionFile();
+        }
         goToSearch();
     }
 
