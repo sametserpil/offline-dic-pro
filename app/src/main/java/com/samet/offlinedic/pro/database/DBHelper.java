@@ -1,5 +1,6 @@
 package com.samet.offlinedic.pro.database;
 
+import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,9 +8,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.text.Html;
+import android.os.Build;
+import android.speech.tts.TextToSpeech;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
+import android.util.Log;
+import android.view.View;
 
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.samet.offlinedic.pro.R;
@@ -24,12 +37,15 @@ import com.samet.offlinedic.pro.model.WordSuggestion;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 
-public class DBHelper extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitListener {
 
-    private Bitmap speaker;
+    private final static String DB_NAME = "yeni.db";
+    private final Context _context;
 
     // The Android's default system path of your application database.
     private final String DB_PATH = System.getenv("EXTERNAL_STORAGE") + "/sozluk-db/";
@@ -38,7 +54,6 @@ public class DBHelper extends SQLiteOpenHelper {
     private final String KEY_MEANING = "meaning";
     private final String KEY_LANG = "lang";
     private final String FIELD_SUGGESTION = "word";
-    private final static String DB_NAME = "yeni.db";
     private final String TR2EN_TABLE = "TR";
     private final String EN2TR_TABLE = "EN";
     private final String HISTORY_TABLE = "HISTORY";
@@ -50,7 +65,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private final String DAILY_PHARASES_TABLE = "DAILY_PHARASES";
     private final String[] DAILY_PHARASES_COLS = new String[]{"pharase", "meaning", "category"};
     private final SQLiteDatabase myDataBase;
-
+    private Bitmap speaker;
+    private TextToSpeech tts;
 
     /**
      * Constructor Takes and keeps a reference of the passed context in order to
@@ -58,6 +74,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public DBHelper(Context context) {
         super(context, DB_NAME, null, 1);
+        this._context = context;
         myDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READWRITE);
         readIrregularVerbs();
         readPharasalVerbs();
@@ -65,6 +82,8 @@ public class DBHelper extends SQLiteOpenHelper {
         readFavorites();
         readHistory();
         speaker = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_volume_up_black_24dp);
+        tts = new TextToSpeech(_context, this);
+        tts.setLanguage(Locale.US);
     }
 
 
@@ -160,16 +179,33 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Spanned getMeaningEN2TR(String query) {
         String[] columns = new String[]{KEY_WORD_EXTENDED, KEY_MEANING};
-        Cursor cursor = myDataBase.query(EN2TR_TABLE, columns, KEY_WORD + "=\""
+        final Cursor cursor = myDataBase.query(EN2TR_TABLE, columns, KEY_WORD + "=\""
                 + query + "\" collate nocase", null, null, null, null);
-        String meaning = "";
-
+        String meaning;
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
         if (cursor != null) {
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                meaning += "<font color=#FF4081>" + cursor.getString(0) + "</font><br><br><font color=#3F51B5>" + cursor.getString(1).replaceAll("\\\\n", "<br>") + "</font><br>";
+                final String word = cursor.getString(0);
+                meaning = word + "ab" + "\n\n" + cursor.getString(1).replaceAll("\\\\n", "\n") + "\n";
+                SpannableString spannableMeaning = new SpannableString(meaning);
+                spannableMeaning.setSpan(new ForegroundColorSpan(Color.parseColor("#FF4081")), 0, word.length(), 0);
+                final Drawable speakerDrawable = new BitmapDrawable(_context.getResources(), speaker);
+                speakerDrawable.setBounds(50, 0, 130, 80);
+                ImageSpan imageSpan = new ImageSpan(speakerDrawable, ImageSpan.ALIGN_BOTTOM);
+                spannableMeaning.setSpan(imageSpan, word.length(), word.length() + 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                ClickableSpan clickableSpan = new ClickableSpan() {
+                    @Override
+                    public void onClick(View view) {
+                        speak(word);
+                    }
+
+                };
+                spannableMeaning.setSpan(clickableSpan, word.length(), word.length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableMeaning.setSpan(new ForegroundColorSpan(Color.parseColor("#3F51B5")), word.length() + 2, meaning.length(), 0);
+                spannableStringBuilder.append(spannableMeaning);
             }
             cursor.close();
-            return formatMeaningText(meaning);
+            return spannableStringBuilder;
         }
 
         return null;
@@ -177,26 +213,37 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Spanned getMeaningTR2EN(String query) {
         String[] columns = new String[]{KEY_WORD_EXTENDED, KEY_MEANING};
-        Cursor cursor = myDataBase.query(TR2EN_TABLE, columns, KEY_WORD + "=\""
+        final Cursor cursor = myDataBase.query(TR2EN_TABLE, columns, KEY_WORD + "=\""
                 + query + "\" collate nocase", null, null, null, null);
-        String meaning = "";
+        String meaning;
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
         if (cursor != null) {
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                meaning += "<font color=#FF4081>" + cursor.getString(0) + "</font><br><br><font color=#3F51B5>" + cursor.getString(1).replaceAll("\\\\n", "<br>") + "</font><br>";
+                final String word = cursor.getString(0);
+                final String meaningText = cursor.getString(1).replaceAll("\\\\n", "\n");
+                meaning = word + "ab" + "\n\n" + cursor.getString(1).replaceAll("\\\\n", "\n") + "\n";
+                SpannableString spannableMeaning = new SpannableString(meaning);
+                spannableMeaning.setSpan(new ForegroundColorSpan(Color.parseColor("#FF4081")), 0, word.length(), 0);
+                final Drawable speakerDrawable = new BitmapDrawable(_context.getResources(), speaker);
+                speakerDrawable.setBounds(50, 0, 130, 80);
+                ImageSpan imageSpan = new ImageSpan(speakerDrawable, ImageSpan.ALIGN_BOTTOM);
+                spannableMeaning.setSpan(imageSpan, word.length(), word.length() + 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                ClickableSpan clickableSpan = new ClickableSpan() {
+                    @Override
+                    public void onClick(View view) {
+                        speak(meaningText);
+                    }
+
+                };
+                spannableMeaning.setSpan(clickableSpan, word.length(), word.length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableMeaning.setSpan(new ForegroundColorSpan(Color.parseColor("#3F51B5")), word.length() + 2, meaning.length(), 0);
+                spannableStringBuilder.append(spannableMeaning);
             }
             cursor.close();
-            return formatMeaningText(meaning);
+            return spannableStringBuilder;
         }
 
         return null;
-    }
-
-    private Spanned formatMeaningText(String query) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            return Html.fromHtml(query, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            return Html.fromHtml(query);
-        }
     }
 
     public List<SearchSuggestion> getSuggestionsEN2TR(String query) {
@@ -232,24 +279,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return suggestions;
     }
 
-
-    public long addEnglishWord(String word, String meaning) {
-        if (word.equals("") || meaning.equals(""))
-            return 0;
-        ContentValues cv = new ContentValues();
-        cv.put(KEY_WORD, word);
-        cv.put(KEY_MEANING, meaning);
-        return myDataBase.insert(EN2TR_TABLE, null, cv);
-    }
-
-    public long addTurkishWord(String word, String meaning) {
-        if (word.equals("") || meaning.equals(""))
-            return 0;
-        ContentValues cv = new ContentValues();
-        cv.put(KEY_WORD, word);
-        cv.put(KEY_MEANING, meaning);
-        return myDataBase.insert(TR2EN_TABLE, null, cv);
-    }
 
     public long addToFavorites(String word, Direction direction) {
         if (word.equals(""))
@@ -320,5 +349,38 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void clearHistory() {
         myDataBase.delete(HISTORY_TABLE, "1=1", null);
+    }
+
+    @Override
+    public void onInit(int i) {
+        Log.i(_context.getString(R.string.app_name), "Initialized tts");
+    }
+
+    private void speak(String text) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ttsGreater21(text);
+        } else {
+            ttsUnder20(text);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void ttsUnder20(String text) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void ttsGreater21(String text) {
+        String utteranceId = this.hashCode() + "";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+    }
+
+    public void killTTS() {
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
     }
 }

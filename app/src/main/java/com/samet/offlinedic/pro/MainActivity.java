@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity
     };
 
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity
         verifyStoragePermissions(this);
         readLastTranslationDirection();
         DataHolder.getInstance().dbHelper = new DBHelper(this);
+        goToSearch();
     }
 
     private void readLastTranslationDirection() {
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.nav_search:
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, SearchFragment.newInstance(), getString(R.string.dictionary)).commit();
+                goToSearch();
                 break;
             case R.id.nav_commons:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, DailyPharasesFragment.newInstance(), getString(R.string.common_pharases)).commit();
@@ -123,4 +125,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void goToSearch() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, SearchFragment.newInstance(), getString(R.string.dictionary)).commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        DataHolder.getInstance().dbHelper.killTTS();
+        super.onDestroy();
+    }
 }

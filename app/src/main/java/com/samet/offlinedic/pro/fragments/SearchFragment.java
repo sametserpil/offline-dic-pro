@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +49,7 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnQue
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         favoritesButton = view.findViewById(R.id.addToFavButton);
         meaningTextView = view.findViewById(R.id.meaning_text_view);
+        meaningTextView.setMovementMethod(LinkMovementMethod.getInstance());
         searchView = view.findViewById(R.id.floating_search_view);
         searchView.setOnQueryChangeListener(this);
         searchView.setOnSearchListener(this);
@@ -58,6 +60,7 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnQue
         } else {
             searchView.setSearchHint(getString(R.string.search_tr));
         }
+        searchView.setSearchFocused(true);
         return view;
     }
 
