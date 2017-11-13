@@ -61,6 +61,7 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnQue
             searchView.setSearchHint(getString(R.string.search_tr));
         }
         searchView.setSearchFocused(true);
+
         return view;
     }
 

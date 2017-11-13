@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -21,8 +22,9 @@ public class FavHisMeaningViewer extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(R.string.dictionary);
         meaningTextView = findViewById(R.id.favhis_meaning_text_view);
-
+        meaningTextView.setMovementMethod(LinkMovementMethod.getInstance());
         Intent myIntent = getIntent();
         String word = myIntent.getStringExtra(getString(R.string.word));
         String lang = myIntent.getStringExtra(getString(R.string.lang));

@@ -3,6 +3,7 @@ package com.samet.offlinedic.pro;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -97,6 +98,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(getApplicationContext(), AboutActivity.class);
+                startActivity(intent);
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -110,18 +117,23 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_commons:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, DailyPharasesFragment.newInstance(), getString(R.string.common_pharases)).commit();
+                getSupportActionBar().setTitle(R.string.common_pharases);
                 break;
             case R.id.nav_favorites:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, FavoritesFragment.newInstance(), getString(R.string.favorites)).commit();
+                getSupportActionBar().setTitle(R.string.favorites);
                 break;
             case R.id.nav_history:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, HistoryFragment.newInstance(), getString(R.string.history)).commit();
+                getSupportActionBar().setTitle(R.string.history);
                 break;
             case R.id.nav_irregular:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, IrregularVerbsFragment.newInstance(), getString(R.string.irregular_verbs)).commit();
+                getSupportActionBar().setTitle(R.string.irregular_verbs);
                 break;
             case R.id.nav_pharasal:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, PharasalVerbsFragment.newInstance(), getString(R.string.pharasal_verbs)).commit();
+                getSupportActionBar().setTitle(R.string.pharasal_verbs);
                 break;
         }
 
@@ -132,6 +144,7 @@ public class MainActivity extends AppCompatActivity
 
     private void goToSearch() {
         getSupportFragmentManager().beginTransaction().replace(R.id.main_activity_fragment_holder, SearchFragment.newInstance(), getString(R.string.dictionary)).commit();
+        getSupportActionBar().setTitle(R.string.dictionary);
     }
 
     @Override
