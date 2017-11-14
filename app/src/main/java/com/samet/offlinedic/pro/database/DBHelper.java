@@ -47,9 +47,9 @@ import java.util.Locale;
 
 public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitListener {
 
+    final static String DB_NAME = "main.1.com.samet.offlinedic.pro.obb";
+    final static String DB_PATH = System.getenv("EXTERNAL_STORAGE") + "/Android/obb/com.samet.offlinedic.pro/";
     private final Context _context;
-    public final static String DB_NAME = "enc.db";
-    public final static String DB_PATH = System.getenv("EXTERNAL_STORAGE") + "/sozluk-db/";
     private final String KEY_WORD = "word";
     private final String KEY_WORD_EXTENDED = "word_extended";
     private final String KEY_MEANING = "meaning";
@@ -93,6 +93,10 @@ public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitLis
         tts.setLanguage(Locale.US);
     }
 
+    public static boolean checkDatabase() {
+        String dbFile = DB_PATH + DB_NAME;
+        return new File(dbFile).exists();
+    }
 
     private void readIrregularVerbs() {
         new AsyncTask<Void, Void, List<IrregularVerb>>() {
@@ -269,7 +273,6 @@ public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitLis
         return suggestions;
     }
 
-
     public List<SearchSuggestion> getSuggestionsTR2EN(String query) {
         Cursor cursor = myDataBase.query(true, TR2EN_TABLE, new String[]{FIELD_SUGGESTION},
                 FIELD_SUGGESTION + " LIKE \"" + query + "%\"", null, null, null, FIELD_SUGGESTION, "20");
@@ -285,7 +288,6 @@ public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitLis
         }
         return suggestions;
     }
-
 
     public long addToFavorites(String word, Direction direction) {
         if (word.equals(""))
@@ -330,7 +332,6 @@ public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitLis
         cv.put(KEY_LANG, direction.getName());
         return myDataBase.insert(HISTORY_TABLE, null, cv);
     }
-
 
     public void readHistory() {
         List<FavHis> history = new ArrayList<>();
@@ -389,10 +390,5 @@ public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitLis
             tts.stop();
             tts.shutdown();
         }
-    }
-
-    public static boolean checkDatabase() {
-        String dbFile = DB_PATH + DB_NAME;
-        return new File(dbFile).exists();
     }
 }

@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         DataHolder.getInstance().dbHelper.killTTS();
+        DataHolder.getInstance().dbHelper.close();
         super.onDestroy();
     }
 }
