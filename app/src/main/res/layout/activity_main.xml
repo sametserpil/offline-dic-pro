@@ -8,6 +8,16 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
+
+    <ProgressBar
+        android:id="@+id/downloadingProgressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="100dp"
+        android:visibility="gone" />
+
+
     <include
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"

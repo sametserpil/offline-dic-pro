@@ -17,6 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.samet.offlinedic.pro.database.DBHelper;
 import com.samet.offlinedic.pro.database.ExpansionFileUtil;
@@ -30,12 +33,16 @@ import com.samet.offlinedic.pro.model.DataHolder;
 import com.samet.offlinedic.pro.model.Direction;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, IDownloadListener {
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+
+    ProgressBar downloadProgressBar;
+
+    private boolean dbDownloaded = false;
 
 
     @SuppressWarnings("deprecation")
@@ -44,6 +51,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        downloadProgressBar = findViewById(R.id.downloadingProgressBar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -53,14 +61,18 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        verifyStoragePermissions(this);
+
         readLastTranslationDirection();
+
         if (DBHelper.checkDatabase()) {
+            dbDownloaded = true;
+            verifyStoragePermissions(this);
             DataHolder.getInstance().dbHelper = new DBHelper(this);
+            goToSearch();
         } else {
-            new ExpansionFileUtil(getApplicationContext()).downloadExpensionFile();
+            verifyStoragePermissions(this);
         }
-        goToSearch();
+
     }
 
     private void readLastTranslationDirection() {
@@ -78,7 +90,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public static void verifyStoragePermissions(Activity activity) {
+    public void verifyStoragePermissions(Activity activity) {
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -87,6 +99,18 @@ public class MainActivity extends AppCompatActivity
                     PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
             );
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED && !dbDownloaded) {
+            downloadProgressBar.setVisibility(View.VISIBLE);
+            new ExpansionFileUtil(getApplicationContext(), this).downloadExpensionFile();
+        } else {
+            Toast.makeText(getApplicationContext(), getString(R.string.permission_needed), Toast.LENGTH_LONG).show();
+            finish();
         }
     }
 
@@ -149,8 +173,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        DataHolder.getInstance().dbHelper.killTTS();
-        DataHolder.getInstance().dbHelper.close();
+        if (DataHolder.getInstance().dbHelper != null) {
+            DataHolder.getInstance().dbHelper.killTTS();
+            DataHolder.getInstance().dbHelper.close();
+        }
         super.onDestroy();
+    }
+
+    @Override
+    public void onDownloadComplete() {
+        DataHolder.getInstance().dbHelper = new DBHelper(this);
+        downloadProgressBar.setVisibility(View.GONE);
+        goToSearch();
+
     }
 }

@@ -83,6 +83,7 @@ public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitLis
             Toast.makeText(_context, _context.getString(R.string.failed_to_open_db), Toast.LENGTH_LONG).show();
 
         }
+        if (checkDBNotNull()) return;
         readIrregularVerbs();
         readPharasalVerbs();
         readDailyPharases();
@@ -93,12 +94,21 @@ public class DBHelper extends SQLiteOpenHelper implements TextToSpeech.OnInitLis
         tts.setLanguage(Locale.US);
     }
 
+    private boolean checkDBNotNull() {
+        if (myDataBase == null) {
+            Toast.makeText(_context, _context.getString(R.string.corrupted_db), Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return false;
+    }
+
     public static boolean checkDatabase() {
         String dbFile = DB_PATH + DB_NAME;
         return new File(dbFile).exists();
     }
 
     private void readIrregularVerbs() {
+
         new AsyncTask<Void, Void, List<IrregularVerb>>() {
             @Override
             protected List<IrregularVerb> doInBackground(Void... voids) {

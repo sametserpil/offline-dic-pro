@@ -336,4 +336,6 @@ limitations under the License.
 
 
     </string>
+    <string name="corrupted_db">Veritabanı hatası, lütfen tekrar indirin.</string>
+    <string name="permission_needed">Uygulamayı kullanabilmek için bu izni vermeniz gerekmektedir.</string>
 </resources>
